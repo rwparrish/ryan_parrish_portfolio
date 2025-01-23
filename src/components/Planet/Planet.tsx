@@ -1,6 +1,6 @@
 import { useRef, useState, useMemo } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import { Mesh, Vector3, InstancedMesh, Matrix4, CatmullRomCurve3, BoxGeometry } from 'three'
+import { Vector3, Matrix4, CatmullRomCurve3 } from 'three'
 import { planetMaterial } from './shaders'
 import { useNavigate } from 'react-router-dom'
 import { Html } from '@react-three/drei'
@@ -26,14 +26,17 @@ const dotData = [
   }
 ];
 
+const GLOW_COLOR = "#ffff00";  // Yellow for dots and trails
+const TERMINAL_COLOR = "#00ff88";  // Original green for terminal
+
 const Terminal = ({ label, description }) => (
   <div style={{
     background: 'rgba(0, 8, 20, 0.9)',
-    border: '2px solid #00ff88',
-    boxShadow: '0 0 20px rgba(0, 255, 136, 0.3)',
+    border: `2px solid ${TERMINAL_COLOR}`,
+    boxShadow: '0 0 20px rgba(0, 255, 136, 0.3)',  // Reverted to original green glow
     padding: '23px',
     borderRadius: '9px',
-    color: '#00ff88',
+    color: TERMINAL_COLOR,  // Reverted to original green
     width: '345px',
     fontFamily: '"Share Tech Mono", monospace',
     position: 'relative',
@@ -44,7 +47,7 @@ const Terminal = ({ label, description }) => (
       left: '23px',
       background: 'rgba(0, 8, 20, 0.9)',
       padding: '0 12px',
-      color: '#00ff88',
+      color: TERMINAL_COLOR,
       fontSize: '16px',
     }}>
       [TERMINAL_ACCESS]
@@ -52,7 +55,7 @@ const Terminal = ({ label, description }) => (
     <h3 style={{
       margin: '0 0 12px 0',
       fontSize: '28px',
-      borderBottom: '1px solid #00ff8855',
+      borderBottom: '1px solid #ffff0055',
       paddingBottom: '9px',
     }}>
       {'> '}{label}
@@ -75,7 +78,7 @@ const Terminal = ({ label, description }) => (
   </div>
 );
 
-const SpaceshipTrail = ({ startPos, endPos, radius }) => {
+const SpaceshipTrail = ({ startPos, endPos, radius, reverse = false }) => {
   const instancedMeshRef = useRef();
   const numShips = 20;
   const shipHeight = radius * 0.03; // Distance from planet surface
@@ -133,13 +136,12 @@ const SpaceshipTrail = ({ startPos, endPos, radius }) => {
 
   return (
     <instancedMesh ref={instancedMeshRef} args={[null, null, numShips]}>
-      {/* Rectangular ship shape */}
-      <boxGeometry args={[0.02, 0.005, 0.01]} /> {/* width, height, depth */}
+      <boxGeometry args={[0.02, 0.005, 0.01]} />
       <meshBasicMaterial 
-        color="#00ff88" 
+        color={reverse ? "#ffd700" : GLOW_COLOR} // Gold for reverse, yellow for forward
         transparent 
         opacity={0.8}
-        toneMapped={false} // Makes the color more vibrant
+        toneMapped={false}
       />
     </instancedMesh>
   );
@@ -213,7 +215,11 @@ const Planet = () => {
             {/* Glow effect */}
             <mesh visible={hoveredDot === index}>
               <sphereGeometry args={[0.08, 32, 32]} />
-              <meshBasicMaterial color="#00ff88" transparent opacity={0.3} />
+              <meshBasicMaterial 
+                color={GLOW_COLOR} 
+                transparent 
+                opacity={0.3} 
+              />
             </mesh>
             
             {/* Main dot */}
@@ -226,7 +232,7 @@ const Planet = () => {
               }}
             >
               <sphereGeometry args={[0.05, 32, 32]} />
-              <meshBasicMaterial color="#00ff88" />
+              <meshBasicMaterial color={GLOW_COLOR} />
             </mesh>
 
             {/* Terminal Popup - only show if dot is facing camera */}
