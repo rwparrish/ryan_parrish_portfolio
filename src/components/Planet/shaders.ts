@@ -74,41 +74,90 @@ export const planetMaterial = {
       return noiseXY * norm.z + noiseXZ * norm.y + noiseYZ * norm.x;
     }
 
+    float landNoise(vec3 p, float scale) {
+      vec3 norm = normalize(vNormal);
+      norm = abs(norm);
+      norm = norm / (norm.x + norm.y + norm.z);
+      
+      float noiseXY = snoise(p.xy * scale);
+      float noiseXZ = snoise(p.xz * scale);
+      float noiseYZ = snoise(p.yz * scale);
+      
+      return noiseXY * norm.z + noiseXZ * norm.y + noiseYZ * norm.x;
+    }
+
+    float ridgedNoise(vec2 p) {
+      return 1.0 - abs(snoise(p));
+    }
+
+    float fbm(vec2 p) {
+      float value = 0.0;
+      float amplitude = 0.5;
+      float frequency = 1.0;
+      for (int i = 0; i < 5; i++) {
+        value += amplitude * snoise(p * frequency);
+        frequency *= 2.0;
+        amplitude *= 0.5;
+      }
+      return value;
+    }
+
+    float randomLight(vec2 uv) {
+      return fract(sin(dot(uv.xy, vec2(12.9898, 78.233))) * 43758.5453);
+    }
+
+    // float continent(vec3 p, vec3 center, float scale, float threshold) {
+    //   vec3 relative = normalize(p - center);
+    //   vec2 coords = vec2(
+    //     atan(relative.z, relative.x),
+    //     acos(relative.y)
+    //   ) * scale;
+      
+    //   float shape = fbm(coords);
+    //   shape = smoothstep(threshold - 0.2, threshold + 0.2, shape);
+      
+    //   float d = distance(p, center);
+    //   shape *= smoothstep(1.0, 0.5, d);
+      
+    //   return shape;
+    // }
+
     void main() {
-      // Base planet color (darker blue)
-      vec3 baseColor = vec3(0.1, 0.2, 0.4);
-      
-      // Atmosphere color (lighter blue)
+      vec3 deepOceanColor = vec3(0.05, 0.12, 0.3);
+      vec3 oceanColor = vec3(0.1, 0.15, 0.35);
       vec3 atmosphereColor = vec3(0.4, 0.6, 1.0);
-      
-      // Cloud color
-      vec3 cloudColor = vec3(0.9, 0.9, 1.0);
+      vec3 cloudColor = vec3(0.95, 0.95, 1.0);
       
       vec3 p = normalize(vWorldPosition);
       float time = uTime * 0.035;
-      
-      // Moderately increased movement speeds
+
+      // Base ocean color
+      vec3 baseColor = mix(deepOceanColor, oceanColor, 0.5);
+
+      // Light direction from the left
+      vec3 lightDir = normalize(vec3(-1.0, 0.0, 0.0));
+      float lightIntensity = max(dot(normalize(vNormal), lightDir), 0.0);
+
+      // Apply lighting to the base color
+      baseColor *= lightIntensity;
+
+      // Cloud layers
       float clouds = triplanarNoise(p, 2.0, 0.08) * 0.5;
       clouds += triplanarNoise(p, 4.0, -0.045) * 0.25;
       clouds += triplanarNoise(p, 8.0, 0.015) * 0.125;
       
       clouds = smoothstep(0.1, 0.6, clouds + 0.2);
-      
-      // Increased swirl speed slightly
       float swirl = triplanarNoise(p + clouds * 0.1, 1.0, 0.12) * 0.3;
       clouds += swirl;
-      
-      // Mix colors based on cloud coverage and atmosphere
-      vec3 cloudMix = mix(atmosphereColor, cloudColor, clouds * 0.6);
-      vec3 finalColor = mix(baseColor, cloudMix, 0.8);
-      
-      // Add rim lighting effect
-      finalColor = mix(finalColor, atmosphereColor, vAtmosphere * 0.4);
-      
-      // Add some depth to the atmosphere
+      clouds = clamp(clouds, 0.0, 1.0);
+
+      vec3 cloudMix = mix(baseColor, cloudColor, clouds * 0.7);
+      vec3 finalColor = mix(baseColor, cloudMix, 0.6);
+
+      finalColor = mix(finalColor, atmosphereColor, vAtmosphere * 0.3);
       float depth = pow(1.0 - max(dot(vNormal, vViewDir), 0.0), 1.5);
-      finalColor = mix(finalColor, atmosphereColor * 1.2, depth * 0.3);
-      
+      finalColor = mix(finalColor, atmosphereColor * 1.2, depth * 0.25);
+
       gl_FragColor = vec4(finalColor, 1.0);
     }
   `
