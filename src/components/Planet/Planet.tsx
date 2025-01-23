@@ -1,61 +1,145 @@
 import { useRef, useState, useMemo } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import { Vector3, Matrix4, CatmullRomCurve3 } from 'three'
+import { Vector3, Matrix4, CatmullRomCurve3, Mesh } from 'three'
 import { planetMaterial } from './shaders'
 import { useNavigate } from 'react-router-dom'
 import { Html } from '@react-three/drei'
 import * as THREE from 'three';
 
-const dotData = [
+interface MoonData {
+  position: [number, number, number];
+  label: string;
+  description: string;
+  path: string;
+  orbitRadius: number;
+  orbitSpeed: number;
+  size: number;
+}
+
+const moonData: MoonData[] = [
   {
     position: [1, 0, 0],
     label: "About",
     description: "Learn more about me and my journey",
-    path: "/about"
+    path: "/about",
+    orbitRadius: 2,
+    orbitSpeed: .2,
+    size: 0.15
   },
   {
     position: [-0.5, 0, 0.866],
     label: "Make First Contact",
     description: "Get in touch and start a conversation",
-    path: "/contact"
+    path: "/contact",
+    orbitRadius: 2.5,
+    orbitSpeed: 0.035,
+    size: 0.12
   },
   {
     position: [-0.5, 0, -0.866],
     label: "Projects",
     description: "Explore my portfolio of work",
-    path: "/projects"
+    path: "/projects",
+    orbitRadius: 3,
+    orbitSpeed: 0.025,
+    size: 0.18
   }
 ];
+
+const COLORS = {
+  glow: "#ffff00",
+  terminal: "#00ff88",
+  terminalBg: 'rgba(0, 8, 20, 0.9)',
+  moonBase: "#888888",
+  moonHighlight: "#ffffff",
+} as const;
+
+interface MoonProps {
+  data: MoonData;
+  isSelected: boolean;
+  onClick: () => void;
+  time: number;
+}
+
+const Moon = ({ data, isSelected, onClick, time }: MoonProps) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const { orbitRadius, orbitSpeed, size } = data;
+  
+  const angle = time * orbitSpeed;
+  const x = Math.cos(angle) * orbitRadius;
+  const z = Math.sin(angle) * orbitRadius;
+  const position: [number, number, number] = [x, 0, z];
+
+  return (
+    <group position={position}>
+      <mesh 
+        onClick={onClick}
+        onPointerOver={(e) => {
+          e.stopPropagation();
+          setIsHovered(true);
+        }}
+        onPointerOut={(e) => {
+          e.stopPropagation();
+          setIsHovered(false);
+        }}
+      >
+        <sphereGeometry args={[size, 32, 32]} />
+        <meshStandardMaterial
+          color={isSelected || isHovered ? COLORS.glow : COLORS.moonBase}
+          emissive={isSelected || isHovered ? COLORS.glow : COLORS.moonBase}
+          emissiveIntensity={isSelected ? 0.5 : isHovered ? 0.3 : 0.1}
+          metalness={0.8}
+          roughness={0.3}
+        />
+      </mesh>
+      {(isSelected || isHovered) && (
+        <Html
+          center
+          style={{
+            pointerEvents: 'none',
+            transform: 'translateZ(0)',
+          }}
+          distanceFactor={2}
+          zIndexRange={[100, 0]}
+        >
+          <Terminal label={data.label} description={data.description} />
+        </Html>
+      )}
+    </group>
+  );
+};
 
 const GLOW_COLOR = "#ffff00";  // Yellow for dots and trails
 const TERMINAL_COLOR = "#00ff88";  // Original green for terminal
 
 const Terminal = ({ label, description }) => (
   <div style={{
-    background: 'rgba(0, 8, 20, 0.9)',
-    border: `2px solid ${TERMINAL_COLOR}`,
-    boxShadow: '0 0 20px rgba(0, 255, 136, 0.3)',  // Reverted to original green glow
+    background: COLORS.terminalBg,
+    border: `2px solid ${COLORS.terminal}`,
+    boxShadow: `0 0 20px rgba(0, 255, 136, 0.3)`,
     padding: '23px',
     borderRadius: '9px',
-    color: TERMINAL_COLOR,  // Reverted to original green
-    width: '345px',
+    color: COLORS.terminal,
+    width: '450px',
     fontFamily: '"Share Tech Mono", monospace',
     position: 'relative',
+    pointerEvents: 'none',
+    userSelect: 'none',
   }}>
     <div style={{
       position: 'absolute',
       top: '-14px',
       left: '23px',
-      background: 'rgba(0, 8, 20, 0.9)',
+      background: COLORS.terminalBg,
       padding: '0 12px',
-      color: TERMINAL_COLOR,
-      fontSize: '16px',
+      color: COLORS.terminal,
+      fontSize: '18px',
     }}>
       [TERMINAL_ACCESS]
     </div>
     <h3 style={{
       margin: '0 0 12px 0',
-      fontSize: '28px',
+      fontSize: '32px',
       borderBottom: '1px solid #ffff0055',
       paddingBottom: '9px',
     }}>
@@ -63,15 +147,15 @@ const Terminal = ({ label, description }) => (
     </h3>
     <p style={{
       margin: 0,
-      fontSize: '18px',
+      fontSize: '22px',
       lineHeight: '1.4',
       opacity: '0.9',
     }}>
       {'>> '}{description}
     </p>
     <div style={{
-      marginTop: '17px',
-      fontSize: '16px',
+      marginTop: '20px',
+      fontSize: '18px',
       opacity: '0.7',
     }}>
       [CLICK TO PROCEED]
@@ -213,125 +297,58 @@ const GalaxyBackground = () => {
   );
 };
 
-const Planet = () => {
-  const meshRef = useRef<Mesh>(null)
-  const groupRef = useRef();  // New ref for the entire planet group
+export default function Planet() {
+  const meshRef = useRef<Mesh>();
+  const [selectedMoon, setSelectedMoon] = useState<number | null>(null);
+  const [time, setTime] = useState(0);
   const navigate = useNavigate();
-  const radius = 1.15;
-  const [hoveredDot, setHoveredDot] = useState<number | null>(null);
-  const [selectedDot, setSelectedDot] = useState<number | null>(null);
   const { camera } = useThree();
-  const dotRefs = useRef(dotData.map(() => new Vector3()));
 
-  // Add rotation animation
   useFrame(({ clock }) => {
-    if (groupRef.current) {
-      // Slow rotation - adjust the multiplier (0.1) to change speed
-      groupRef.current.rotation.y = clock.getElapsedTime() * 0.1;
+    if (meshRef.current?.material) {
+      const material = meshRef.current.material as THREE.ShaderMaterial;
+      material.uniforms.uTime.value = clock.getElapsedTime();
+      setTime(clock.getElapsedTime());
     }
   });
 
-  useFrame(() => {
-    dotData.forEach((dot, index) => {
-      const worldPos = dotRefs.current[index];
-      const x = dot.position[0] * radius;
-      const y = dot.position[1] * radius;
-      const z = dot.position[2] * radius;
-      
-      worldPos.set(x, y, z);
-      meshRef.current.localToWorld(worldPos);
-
-      const dotToCam = new Vector3().subVectors(camera.position, worldPos);
-      const dotNormal = worldPos.clone().normalize();
-      const dotProduct = dotToCam.dot(dotNormal);
-
-      if (dotProduct < 0 && hoveredDot === index) {
-        setHoveredDot(null);
-      }
-    });
-  })
-
-  const handleDotClick = (index: number) => {
-    setSelectedDot(index);
+  const handleMoonClick = (index: number) => {
+    setSelectedMoon(index);
     setTimeout(() => {
-      navigate(dotData[index].path);
+      navigate(moonData[index].path);
     }, 1000);
   };
 
   return (
-    <>
-      <GalaxyBackground />
-      <group ref={groupRef}>  {/* Add ref to the main group */}
-        <mesh ref={meshRef}>
-          <sphereGeometry args={[radius, 256, 256]} />
-          <shaderMaterial {...planetMaterial} />
+    <group>
+      <mesh ref={meshRef}>
+        <sphereGeometry args={[1, 64, 64]} />
+        <shaderMaterial {...planetMaterial} />
+      </mesh>
+
+      {/* Orbit rings */}
+      {moonData.map((moon, index) => (
+        <mesh key={`orbit-${index}`} rotation={[Math.PI / 2, 0, 0]}>
+          <ringGeometry args={[moon.orbitRadius - 0.01, moon.orbitRadius + 0.01, 64]} />
+          <meshBasicMaterial
+            color={selectedMoon === index ? COLORS.glow : "#444444"}
+            transparent
+            opacity={0.3}
+            side={THREE.DoubleSide}
+          />
         </mesh>
-        
-        {/* Connect all dots with trails */}
-        {dotData.map((start, i) => {
-          const nextIndex = (i + 1) % dotData.length;
-          return (
-            <SpaceshipTrail 
-              key={i}
-              startPos={start.position}
-              endPos={dotData[nextIndex].position}
-              radius={radius}
-            />
-          );
-        })}
-        
-        {dotData.map((dot, index) => {
-          const pos = [
-            dot.position[0] * radius,
-            dot.position[1] * radius,
-            dot.position[2] * radius
-          ];
-          
-          return (
-            <group key={index} position={pos}>
-              {/* Glow effect */}
-              <mesh visible={hoveredDot === index}>
-                <sphereGeometry args={[0.08, 32, 32]} />
-                <meshBasicMaterial 
-                  color={GLOW_COLOR} 
-                  transparent 
-                  opacity={0.3} 
-                />
-              </mesh>
-              
-              {/* Main dot */}
-              <mesh
-                onPointerOver={() => setHoveredDot(index)}
-                onPointerOut={() => setHoveredDot(null)}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDotClick(index);
-                }}
-              >
-                <sphereGeometry args={[0.05, 32, 32]} />
-                <meshBasicMaterial color={GLOW_COLOR} />
-              </mesh>
+      ))}
 
-              {/* Terminal Popup - only show if dot is facing camera */}
-              {(hoveredDot === index || selectedDot === index) && (
-                <Html
-                  position={[0, 0.2, 0]}
-                  center
-                  style={{
-                    transform: 'scale(0.8)',
-                    pointerEvents: 'none',
-                  }}
-                  occlude={[meshRef]}
-                >
-                  <Terminal label={dot.label} description={dot.description} />
-                </Html>
-              )}
-            </group>
-          );
-        })}
-      </group>
-    </>
-  )
+      {/* Moons */}
+      {moonData.map((moon, index) => (
+        <Moon
+          key={`moon-${index}`}
+          data={moon}
+          isSelected={selectedMoon === index}
+          onClick={() => handleMoonClick(index)}
+          time={time}
+        />
+      ))}
+    </group>
+  );
 }
-
-export default Planet

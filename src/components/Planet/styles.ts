@@ -9,3 +9,12 @@ export const planetContainer = {
   alignItems: 'center',
   background: '#000'
 } as const
+
+export const appContainer = {
+  width: '100vw',
+  height: '100vh',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  background: '#000'
+} as const;
