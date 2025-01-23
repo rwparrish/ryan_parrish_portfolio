@@ -4,6 +4,7 @@ import { Vector3, Matrix4, CatmullRomCurve3 } from 'three'
 import { planetMaterial } from './shaders'
 import { useNavigate } from 'react-router-dom'
 import { Html } from '@react-three/drei'
+import * as THREE from 'three';
 
 const dotData = [
   {
@@ -147,6 +148,78 @@ const SpaceshipTrail = ({ startPos, endPos, radius, reverse = false }) => {
   );
 };
 
+const GalaxyBackground = () => {
+  const starsCount = 2000;
+  const positions = useMemo(() => {
+    const pos = new Float32Array(starsCount * 3);
+    for (let i = 0; i < starsCount; i++) {
+      const radius = Math.random() * 50 + 20;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.random() * Math.PI * 2;
+      
+      const spiralOffset = (radius / 50) * Math.PI * 2;
+      const finalTheta = theta + spiralOffset;
+      
+      pos[i * 3] = radius * Math.cos(finalTheta) * Math.sin(phi);
+      pos[i * 3 + 1] = (radius * 0.3) * Math.sin(finalTheta);
+      pos[i * 3 + 2] = radius * Math.cos(phi);
+    }
+    return pos;
+  }, []);
+
+  const starColors = useMemo(() => {
+    const colors = new Float32Array(starsCount * 3);
+    const baseColors = [
+      new THREE.Color('#ffffff'),
+      new THREE.Color('#fffcdb'),
+      new THREE.Color('#fff4b5'),
+      new THREE.Color('#ffdede'),
+    ];
+    
+    for (let i = 0; i < starsCount; i++) {
+      const color = baseColors[Math.floor(Math.random() * baseColors.length)];
+      colors[i * 3] = color.r;
+      colors[i * 3 + 1] = color.g;
+      colors[i * 3 + 2] = color.b;
+    }
+    return colors;
+  }, []);
+
+  const pointsRef = useRef();
+
+  useFrame(({ clock }) => {
+    if (!pointsRef.current) return;
+    pointsRef.current.rotation.y = clock.getElapsedTime() * 0.05;
+  });
+
+  return (
+    <points ref={pointsRef}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={positions.length / 3}
+          array={positions}
+          itemSize={3}
+        />
+        <bufferAttribute
+          attach="attributes-color"
+          count={starColors.length / 3}
+          array={starColors}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        size={0.15}
+        vertexColors
+        transparent
+        opacity={0.8}
+        sizeAttenuation
+        blending={THREE.AdditiveBlending}
+      />
+    </points>
+  );
+};
+
 const Planet = () => {
   const meshRef = useRef<Mesh>(null)
   const navigate = useNavigate();
@@ -184,75 +257,78 @@ const Planet = () => {
   };
 
   return (
-    <group>
-      <mesh ref={meshRef}>
-        <sphereGeometry args={[radius, 256, 256]} />
-        <shaderMaterial {...planetMaterial} />
-      </mesh>
-      
-      {/* Connect all dots with trails */}
-      {dotData.map((start, i) => {
-        const nextIndex = (i + 1) % dotData.length;
-        return (
-          <SpaceshipTrail 
-            key={i}
-            startPos={start.position}
-            endPos={dotData[nextIndex].position}
-            radius={radius}
-          />
-        );
-      })}
-      
-      {dotData.map((dot, index) => {
-        const pos = [
-          dot.position[0] * radius,
-          dot.position[1] * radius,
-          dot.position[2] * radius
-        ];
+    <>
+      <GalaxyBackground />
+      <group>
+        <mesh ref={meshRef}>
+          <sphereGeometry args={[radius, 256, 256]} />
+          <shaderMaterial {...planetMaterial} />
+        </mesh>
         
-        return (
-          <group key={index} position={pos}>
-            {/* Glow effect */}
-            <mesh visible={hoveredDot === index}>
-              <sphereGeometry args={[0.08, 32, 32]} />
-              <meshBasicMaterial 
-                color={GLOW_COLOR} 
-                transparent 
-                opacity={0.3} 
-              />
-            </mesh>
-            
-            {/* Main dot */}
-            <mesh
-              onPointerOver={() => setHoveredDot(index)}
-              onPointerOut={() => setHoveredDot(null)}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleDotClick(index);
-              }}
-            >
-              <sphereGeometry args={[0.05, 32, 32]} />
-              <meshBasicMaterial color={GLOW_COLOR} />
-            </mesh>
-
-            {/* Terminal Popup - only show if dot is facing camera */}
-            {(hoveredDot === index || selectedDot === index) && (
-              <Html
-                position={[0, 0.2, 0]}
-                center
-                style={{
-                  transform: 'scale(0.8)',
-                  pointerEvents: 'none',
+        {/* Connect all dots with trails */}
+        {dotData.map((start, i) => {
+          const nextIndex = (i + 1) % dotData.length;
+          return (
+            <SpaceshipTrail 
+              key={i}
+              startPos={start.position}
+              endPos={dotData[nextIndex].position}
+              radius={radius}
+            />
+          );
+        })}
+        
+        {dotData.map((dot, index) => {
+          const pos = [
+            dot.position[0] * radius,
+            dot.position[1] * radius,
+            dot.position[2] * radius
+          ];
+          
+          return (
+            <group key={index} position={pos}>
+              {/* Glow effect */}
+              <mesh visible={hoveredDot === index}>
+                <sphereGeometry args={[0.08, 32, 32]} />
+                <meshBasicMaterial 
+                  color={GLOW_COLOR} 
+                  transparent 
+                  opacity={0.3} 
+                />
+              </mesh>
+              
+              {/* Main dot */}
+              <mesh
+                onPointerOver={() => setHoveredDot(index)}
+                onPointerOut={() => setHoveredDot(null)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDotClick(index);
                 }}
-                occlude={[meshRef]}
               >
-                <Terminal label={dot.label} description={dot.description} />
-              </Html>
-            )}
-          </group>
-        );
-      })}
-    </group>
+                <sphereGeometry args={[0.05, 32, 32]} />
+                <meshBasicMaterial color={GLOW_COLOR} />
+              </mesh>
+
+              {/* Terminal Popup - only show if dot is facing camera */}
+              {(hoveredDot === index || selectedDot === index) && (
+                <Html
+                  position={[0, 0.2, 0]}
+                  center
+                  style={{
+                    transform: 'scale(0.8)',
+                    pointerEvents: 'none',
+                  }}
+                  occlude={[meshRef]}
+                >
+                  <Terminal label={dot.label} description={dot.description} />
+                </Html>
+              )}
+            </group>
+          );
+        })}
+      </group>
+    </>
   )
 }
 
