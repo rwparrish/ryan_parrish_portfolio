@@ -4,14 +4,14 @@ export const planetMaterial = {
   },
   vertexShader: `
     uniform float uTime;
-    varying vec2 vUv;
     varying vec3 vNormal;
     varying float vAtmosphere;
     varying vec3 vViewDir;
+    varying vec3 vWorldPosition;
 
     void main() {
-      vUv = uv;
       vNormal = normalize(normalMatrix * normal);
+      vWorldPosition = (modelMatrix * vec4(position, 1.0)).xyz;
       
       vec4 viewPos = modelViewMatrix * vec4(position, 1.0);
       vec3 viewDir = normalize(-viewPos.xyz);
@@ -25,12 +25,11 @@ export const planetMaterial = {
   `,
   fragmentShader: `
     uniform float uTime;
-    varying vec2 vUv;
     varying vec3 vNormal;
     varying float vAtmosphere;
     varying vec3 vViewDir;
+    varying vec3 vWorldPosition;
 
-    // Simplex 2D noise
     vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
 
     float snoise(vec2 v) {
@@ -60,6 +59,21 @@ export const planetMaterial = {
       return 130.0 * dot(m, g);
     }
 
+    float triplanarNoise(vec3 p, float scale, float speed) {
+      vec3 norm = normalize(vNormal);
+      norm = abs(norm);
+      norm = norm / (norm.x + norm.y + norm.z);
+      
+      float time = uTime * speed * 0.25;
+      
+      // Sample noise for each axis projection
+      float noiseXY = snoise(p.xy * scale + vec2(time));
+      float noiseXZ = snoise(p.xz * scale + vec2(time * 1.1));
+      float noiseYZ = snoise(p.yz * scale + vec2(time * 0.9));
+      
+      return noiseXY * norm.z + noiseXZ * norm.y + noiseYZ * norm.x;
+    }
+
     void main() {
       // Base planet color (darker blue)
       vec3 baseColor = vec3(0.1, 0.2, 0.4);
@@ -70,21 +84,18 @@ export const planetMaterial = {
       // Cloud color
       vec3 cloudColor = vec3(0.9, 0.9, 1.0);
       
-      // Create moving cloud patterns using multiple noise layers
-      float time = uTime * 0.1;
-      vec2 uv = vUv;
+      vec3 p = normalize(vWorldPosition);
+      float time = uTime * 0.035;
       
-      // Large cloud formations
-      float clouds = snoise(vec2(uv.x * 4.0 + time * 0.2, uv.y * 4.0)) * 0.5;
-      clouds += snoise(vec2(uv.x * 8.0 - time * 0.1, uv.y * 8.0)) * 0.25;
-      clouds += snoise(vec2(uv.x * 16.0 + time * 0.05, uv.y * 16.0)) * 0.125;
-      clouds = smoothstep(0.1, 0.6, clouds);
+      // Moderately increased movement speeds
+      float clouds = triplanarNoise(p, 2.0, 0.08) * 0.5;
+      clouds += triplanarNoise(p, 4.0, -0.045) * 0.25;
+      clouds += triplanarNoise(p, 8.0, 0.015) * 0.125;
       
-      // Add swirling motion to the clouds
-      float swirl = snoise(vec2(
-        uv.x * 2.0 + time * 0.3 + clouds * 0.2,
-        uv.y * 2.0 + time * 0.2
-      )) * 0.3;
+      clouds = smoothstep(0.1, 0.6, clouds + 0.2);
+      
+      // Increased swirl speed slightly
+      float swirl = triplanarNoise(p + clouds * 0.1, 1.0, 0.12) * 0.3;
       clouds += swirl;
       
       // Mix colors based on cloud coverage and atmosphere
