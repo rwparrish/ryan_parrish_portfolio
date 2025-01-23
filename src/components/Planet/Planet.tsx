@@ -61,6 +61,74 @@ interface MoonProps {
   time: number;
 }
 
+const moonShader = {
+  vertexShader: `
+    varying vec3 vPosition;
+    varying vec3 vNormal;
+    
+    void main() {
+      vPosition = position;
+      vNormal = normalize(normalMatrix * normal);
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `,
+  fragmentShader: `
+    varying vec3 vPosition;
+    varying vec3 vNormal;
+    
+    uniform vec3 baseColor;
+    uniform float glowIntensity;
+    
+    // Noise function
+    float noise(vec3 p) {
+      vec3 i = floor(p);
+      vec3 f = fract(p);
+      f = f * f * (3.0 - 2.0 * f);
+      
+      float n = i.x + i.y * 157.0 + 113.0 * i.z;
+      return mix(
+        mix(
+          mix(fract(sin(n + 0.0) * 43758.5453123),
+              fract(sin(n + 1.0) * 43758.5453123),
+              f.x),
+          mix(fract(sin(n + 157.0) * 43758.5453123),
+              fract(sin(n + 158.0) * 43758.5453123),
+              f.x),
+          f.y),
+        mix(
+          mix(fract(sin(n + 113.0) * 43758.5453123),
+              fract(sin(n + 114.0) * 43758.5453123),
+              f.x),
+          mix(fract(sin(n + 270.0) * 43758.5453123),
+              fract(sin(n + 271.0) * 43758.5453123),
+              f.x),
+          f.y),
+        f.z
+      );
+    }
+    
+    void main() {
+      // Create crater-like surface
+      float crater = noise(vPosition * 10.0) * 0.5 + 0.5;
+      crater += noise(vPosition * 20.0) * 0.25;
+      crater += noise(vPosition * 40.0) * 0.125;
+      
+      // Basic lighting
+      vec3 lightDir = normalize(vec3(1.0, 1.0, 1.0));
+      float diffuse = max(dot(vNormal, lightDir), 0.0);
+      
+      // Combine colors
+      vec3 color = baseColor * (0.5 + 0.5 * crater);
+      color *= (0.3 + 0.7 * diffuse);  // Apply lighting
+      
+      // Add glow
+      color += baseColor * glowIntensity * 0.5;
+      
+      gl_FragColor = vec4(color, 1.0);
+    }
+  `
+};
+
 const Moon = ({ data, isSelected, onClick, time }: MoonProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const { orbitRadius, orbitSpeed, size } = data;
@@ -69,6 +137,17 @@ const Moon = ({ data, isSelected, onClick, time }: MoonProps) => {
   const x = Math.cos(angle) * orbitRadius;
   const z = Math.sin(angle) * orbitRadius;
   const position: [number, number, number] = [x, 0, z];
+
+  const moonMaterial = useMemo(() => {
+    return new THREE.ShaderMaterial({
+      uniforms: {
+        baseColor: { value: new THREE.Color(isSelected || isHovered ? COLORS.glow : COLORS.moonBase) },
+        glowIntensity: { value: isSelected ? 0.5 : isHovered ? 0.3 : 0.1 }
+      },
+      vertexShader: moonShader.vertexShader,
+      fragmentShader: moonShader.fragmentShader
+    });
+  }, [isSelected, isHovered]);
 
   return (
     <group position={position}>
@@ -84,13 +163,7 @@ const Moon = ({ data, isSelected, onClick, time }: MoonProps) => {
         }}
       >
         <sphereGeometry args={[size, 32, 32]} />
-        <meshStandardMaterial
-          color={isSelected || isHovered ? COLORS.glow : COLORS.moonBase}
-          emissive={isSelected || isHovered ? COLORS.glow : COLORS.moonBase}
-          emissiveIntensity={isSelected ? 0.5 : isHovered ? 0.3 : 0.1}
-          metalness={0.8}
-          roughness={0.3}
-        />
+        <primitive object={moonMaterial} />
       </mesh>
       {(isSelected || isHovered) && (
         <Html

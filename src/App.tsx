@@ -1,11 +1,12 @@
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import Planet from './components/Planet'
+import Universe from './components/Universe'
 import { planetContainer } from './components/Planet/styles'
 
 export default function App() {
   // Calculate initial camera position
-  const distance = 6;  // Increased from 4
+  const distance = 5;  // Increased from 4
   const angleInDegrees = 35;
   const angleInRadians = (angleInDegrees * Math.PI) / 180;
   
@@ -24,6 +25,7 @@ export default function App() {
     }}>
       <div style={planetContainer}>
         <Canvas camera={{ position: [x, y, z], fov: 45 }}>
+          <Universe />
           <ambientLight intensity={0.5} />
           <directionalLight position={[5, 3, 5]} intensity={1} />
           <Planet />
