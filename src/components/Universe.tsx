@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
 
+
 const starfieldShader = {
   vertexShader: `
     varying vec3 vPos;
@@ -95,24 +96,26 @@ export default function Universe() {
 
   useFrame(({ clock }) => {
     if (materialRef.current) {
-      materialRef.current.uniforms.uTime.value = clock.getElapsedTime() * 0.2; // Slower time progression
+      materialRef.current.uniforms.uTime.value = clock.getElapsedTime() * 0.2;
     }
   });
 
   return (
-    <mesh>
-      <sphereGeometry args={[100, 64, 64]} /> {/* Increased sphere size */}
-      <shaderMaterial
-        ref={materialRef}
-        side={THREE.BackSide}
-        uniforms={{
-          uTime: { value: 0 }
-        }}
-        vertexShader={starfieldShader.vertexShader}
-        fragmentShader={starfieldShader.fragmentShader}
-        transparent={true}
-        depthWrite={false}  // Ensures stars are always visible
-      />
-    </mesh>
+    <>
+      <mesh>
+        <sphereGeometry args={[100, 64, 64]} />
+        <shaderMaterial
+          ref={materialRef}
+          side={THREE.BackSide}
+          uniforms={{
+            uTime: { value: 0 }
+          }}
+          vertexShader={starfieldShader.vertexShader}
+          fragmentShader={starfieldShader.fragmentShader}
+          transparent={true}
+          depthWrite={false}
+        />
+      </mesh>
+    </>
   );
 }

@@ -1,6 +1,6 @@
 import { useRef, useState, useMemo } from 'react'
-import { useFrame, useThree } from '@react-three/fiber'
-import { Vector3, Matrix4, Mesh } from 'three'
+import { useFrame } from '@react-three/fiber'
+import { Mesh } from 'three'
 import { planetMaterial } from './shaders'
 import { useNavigate } from 'react-router-dom'
 import { Html } from '@react-three/drei'
@@ -51,7 +51,6 @@ const COLORS = {
   terminal: "#00ff88",
   terminalBg: 'rgba(0, 8, 20, 0.9)',
   moonBase: "#888888",
-  moonHighlight: "#ffffff",
 } as const;
 
 interface MoonProps {
@@ -182,9 +181,6 @@ const Moon = ({ data, isSelected, onClick, time }: MoonProps) => {
   );
 };
 
-const GLOW_COLOR = "#ffff00";  // Yellow for dots and trails
-const TERMINAL_COLOR = "#00ff88";  // Original green for terminal
-
 const Terminal = ({ label, description }) => (
   <div style={{
     background: COLORS.terminalBg,
@@ -236,77 +232,11 @@ const Terminal = ({ label, description }) => (
   </div>
 );
 
-const GalaxyBackground = () => {
-  const starsCount = 2000;
-  const positions = useMemo(() => {
-    const pos = new Float32Array(starsCount * 3);
-    for (let i = 0; i < starsCount; i++) {
-      const radius = Math.random() * 50 + 20;
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.random() * Math.PI * 2;
-      
-      const spiralOffset = (radius / 50) * Math.PI * 2;
-      const finalTheta = theta + spiralOffset;
-      
-      pos[i * 3] = radius * Math.cos(finalTheta) * Math.sin(phi);
-      pos[i * 3 + 1] = (radius * 0.3) * Math.sin(finalTheta);
-      pos[i * 3 + 2] = radius * Math.cos(phi);
-    }
-    return pos;
-  }, []);
-
-  const starColors = useMemo(() => {
-    const colors = new Float32Array(starsCount * 3);
-    const baseColors = [
-      new THREE.Color('#ffffff'),
-      new THREE.Color('#fffcdb'),
-      new THREE.Color('#fff4b5'),
-      new THREE.Color('#ffdede'),
-    ];
-    
-    for (let i = 0; i < starsCount; i++) {
-      const color = baseColors[Math.floor(Math.random() * baseColors.length)];
-      colors[i * 3] = color.r;
-      colors[i * 3 + 1] = color.g;
-      colors[i * 3 + 2] = color.b;
-    }
-    return colors;
-  }, []);
-
-  return (
-    <points>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={positions.length / 3}
-          array={positions}
-          itemSize={3}
-        />
-        <bufferAttribute
-          attach="attributes-color"
-          count={starColors.length / 3}
-          array={starColors}
-          itemSize={3}
-        />
-      </bufferGeometry>
-      <pointsMaterial
-        size={0.15}
-        vertexColors
-        transparent
-        opacity={0.8}
-        sizeAttenuation
-        blending={THREE.AdditiveBlending}
-      />
-    </points>
-  );
-};
-
 export default function Planet() {
   const meshRef = useRef<Mesh>();
   const [selectedMoon, setSelectedMoon] = useState<number | null>(null);
   const [time, setTime] = useState(0);
   const navigate = useNavigate();
-  const { camera } = useThree();
 
   useFrame(({ clock }) => {
     if (meshRef.current?.material) {
@@ -330,7 +260,6 @@ export default function Planet() {
         <shaderMaterial {...planetMaterial} />
       </mesh>
 
-      {/* Orbit rings */}
       {moonData.map((moon, index) => (
         <mesh key={`orbit-${index}`} rotation={[Math.PI / 2, 0, 0]}>
           <ringGeometry args={[moon.orbitRadius - 0.01, moon.orbitRadius + 0.01, 64]} />
@@ -343,7 +272,6 @@ export default function Planet() {
         </mesh>
       ))}
 
-      {/* Moons */}
       {moonData.map((moon, index) => (
         <Moon
           key={`moon-${index}`}

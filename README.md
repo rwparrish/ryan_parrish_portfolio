@@ -1,50 +1,29 @@
-# React + TypeScript + Vite
+# Interactive 3D Portfolio Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+My current portfolio website! A unique portfolio website featuring an interactive 3D planetary system built with React, Three.js, and React Three Fiber. The website presents different sections as orbiting moons around a central planet, creating an engaging and immersive user experience.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 🌍 Interactive 3D planetary system interface
+- 🌠 Dynamic starfield background with nebula effects
+- 🛸 Custom shader materials for planets and moons
+- 💫 Smooth orbital animations
+- 🎯 Interactive navigation through planetary bodies
+- 📱 Responsive design
+- 🎨 Sci-fi terminal-style UI elements
 
-## Expanding the ESLint configuration
+## Technologies Used
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- React 18
+- TypeScript
+- Three.js
+- React Three Fiber (@react-three/fiber)
+- React Three Drei
+- React Router DOM
+- Vite
+- Custom GLSL Shaders
 
-- Configure the top-level `parserOptions` property like this:
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```

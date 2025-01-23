@@ -1,8 +1,8 @@
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
-import Planet from './components/Planet'
-import Universe from './components/Universe'
-import { planetContainer } from './components/Planet/styles'
+import Planet from './Planet'
+import Universe from './Universe'
+import { planetContainer } from './Planet/styles'
 
 export default function App() {
   // Calculate initial camera position
