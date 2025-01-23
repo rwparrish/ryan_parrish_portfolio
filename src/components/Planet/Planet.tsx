@@ -232,6 +232,41 @@ const Terminal = ({ label, description }) => (
   </div>
 );
 
+const atmosphereShader = {
+  vertexShader: `
+    varying vec3 vNormal;
+    varying vec3 vWorldPosition;
+    
+    void main() {
+      vNormal = normalize(normalMatrix * normal);
+      vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+      vWorldPosition = worldPosition.xyz;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `,
+  fragmentShader: `
+    varying vec3 vNormal;
+    varying vec3 vWorldPosition;
+    
+    void main() {
+      vec3 viewVector = normalize(cameraPosition - vWorldPosition);
+      float rim = 1.0 - abs(dot(viewVector, vNormal));
+      
+      // Significantly increased base glow
+      float baseGlow = 0.4;
+      
+      // Increased rim effect
+      float glowIntensity = baseGlow + (rim * 0.5);
+      
+      // Smoother fade to space
+      float fade = smoothstep(0.0, 0.8, rim);
+      
+      vec3 glowColor = vec3(0.0, 1.0, 0.54); // Your terminal green color
+      gl_FragColor = vec4(glowColor, 1.0) * glowIntensity * 0.35; // Increased overall intensity
+    }
+  `
+};
+
 export default function Planet() {
   const meshRef = useRef<Mesh>();
   const [selectedMoon, setSelectedMoon] = useState<number | null>(null);
@@ -255,6 +290,31 @@ export default function Planet() {
 
   return (
     <group>
+      {/* Inner atmosphere layer - increased scale */}
+      <mesh scale={[1.1, 1.1, 1.1]}>
+        <sphereGeometry args={[1, 64, 64]} />
+        <shaderMaterial
+          {...atmosphereShader}
+          transparent={true}
+          side={THREE.BackSide}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+        />
+      </mesh>
+      
+      {/* Outer atmosphere layer - increased scale */}
+      <mesh scale={[1.2, 1.2, 1.2]}>
+        <sphereGeometry args={[1, 64, 64]} />
+        <shaderMaterial
+          {...atmosphereShader}
+          transparent={true}
+          side={THREE.BackSide}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+        />
+      </mesh>
+
+      {/* Planet */}
       <mesh ref={meshRef}>
         <sphereGeometry args={[1, 64, 64]} />
         <shaderMaterial {...planetMaterial} />
