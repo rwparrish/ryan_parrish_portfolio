@@ -185,15 +185,8 @@ const GalaxyBackground = () => {
     return colors;
   }, []);
 
-  const pointsRef = useRef();
-
-  useFrame(({ clock }) => {
-    if (!pointsRef.current) return;
-    pointsRef.current.rotation.y = clock.getElapsedTime() * 0.05;
-  });
-
   return (
-    <points ref={pointsRef}>
+    <points>
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
@@ -222,12 +215,21 @@ const GalaxyBackground = () => {
 
 const Planet = () => {
   const meshRef = useRef<Mesh>(null)
+  const groupRef = useRef();  // New ref for the entire planet group
   const navigate = useNavigate();
   const radius = 1.15;
   const [hoveredDot, setHoveredDot] = useState<number | null>(null);
   const [selectedDot, setSelectedDot] = useState<number | null>(null);
   const { camera } = useThree();
   const dotRefs = useRef(dotData.map(() => new Vector3()));
+
+  // Add rotation animation
+  useFrame(({ clock }) => {
+    if (groupRef.current) {
+      // Slow rotation - adjust the multiplier (0.1) to change speed
+      groupRef.current.rotation.y = clock.getElapsedTime() * 0.1;
+    }
+  });
 
   useFrame(() => {
     dotData.forEach((dot, index) => {
@@ -259,7 +261,7 @@ const Planet = () => {
   return (
     <>
       <GalaxyBackground />
-      <group>
+      <group ref={groupRef}>  {/* Add ref to the main group */}
         <mesh ref={meshRef}>
           <sphereGeometry args={[radius, 256, 256]} />
           <shaderMaterial {...planetMaterial} />

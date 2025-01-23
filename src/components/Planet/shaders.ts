@@ -142,12 +142,12 @@ export const planetMaterial = {
       baseColor *= lightIntensity;
 
       // Cloud layers
-      float clouds = triplanarNoise(p, 2.0, 0.08) * 0.5;
-      clouds += triplanarNoise(p, 4.0, -0.045) * 0.25;
-      clouds += triplanarNoise(p, 8.0, 0.015) * 0.125;
+      float clouds = triplanarNoise(p, 2.0, 0.16) * 0.5;
+      clouds += triplanarNoise(p, 4.0, -0.09) * 0.25;
+      clouds += triplanarNoise(p, 8.0, 0.03) * 0.125;
       
       clouds = smoothstep(0.1, 0.6, clouds + 0.2);
-      float swirl = triplanarNoise(p + clouds * 0.1, 1.0, 0.12) * 0.3;
+      float swirl = triplanarNoise(p + clouds * 0.1, 1.0, 0.24) * 0.3;
       clouds += swirl;
       clouds = clamp(clouds, 0.0, 1.0);
 
