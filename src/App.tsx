@@ -6,7 +6,7 @@ import { planetContainer } from './components/Planet/styles'
 
 export default function App() {
   // Calculate initial camera position
-  const distance = 5;  // Increased from 4
+  const distance = 6;  // Increased from 4
   const angleInDegrees = 35;
   const angleInRadians = (angleInDegrees * Math.PI) / 180;
   
