@@ -1,13 +1,13 @@
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
-import { useRef } from 'react'
+import { useRef, FC } from 'react'
 
-export default function Planet() {
+const Planet: FC = () => {
   const materialRef = useRef<THREE.MeshStandardMaterial>(null)
   
   // Create a noise texture for terrain
-  const noiseTexture = new THREE.TextureLoader().load('/noise.png', (texture) => {
+  const noiseTexture: THREE.Texture = new THREE.TextureLoader().load('/noise.png', (texture: THREE.Texture) => {
     texture.wrapS = texture.wrapT = THREE.RepeatWrapping
   })
 
@@ -37,3 +37,5 @@ export default function Planet() {
     </div>
   )
 }
+
+export default Planet
