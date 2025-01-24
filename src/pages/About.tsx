@@ -1,7 +1,11 @@
+import { useState } from 'react';
 import { Layout } from '../components/Layout';
 import { TerminalText } from '../components/TerminalText';
+import { Modal } from '../components/Modal';
 
 export default function About() {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     const content = [
         {
             text: "Welcome aboard, I'm Captain Ryan Parrish. Welcome to my corner of the digital universe. I'm a software engineer with a passion for creating innovative solutions and building stylish products. I love to learn and build things. If it wasn't already obvious, I'm a big fan of space and sci-fi.\n\n",
@@ -57,12 +61,24 @@ export default function About() {
             delay: 22000,
         },
         {
-            text: "Thanks for stopping by! I hope you find something interesting here. If you have any questions or just want to chat, feel free to reach out. I'm always open to new connections and opportunities. Return to the bridge and click on the 'first contact' moon for details.\n\n",
+            text: "$ access PERSONNEL_FILE\n",
+            delay: 23000,
+            color: '#00ff88'
+        },
+        {
+            text: ">> Click here to view classified documents <<",
             delay: 24000,
+            isLink: true,
+            onClick: () => setIsModalOpen(true),
+            color: '#ffd700'
+        },
+        {
+            text: "\n\nThanks for stopping by! I hope you find something interesting here. If you have any questions or just want to chat, feel free to reach out. I'm always open to new connections and opportunities. Return to the bridge and click on the 'First Contact' moon for details.\n\n",
+            delay: 27500,
         },
         {
             text: "Live long, and prosper.\n",
-            delay: 33000,
+            delay: 36000,
         }
     ];
 
@@ -105,7 +121,7 @@ export default function About() {
                     borderRadius: '8px',
                     border: '1px solid #00ff88',
                     boxShadow: '0 0 20px rgba(0, 255, 136, 0.2)',
-                    margin: '0 20px 20px 20px'  // Changed margin
+                    margin: '0 20px 20px 20px'
                 }}>
                     {content.map((item, index) => (
                         <TerminalText
@@ -114,10 +130,25 @@ export default function About() {
                             delay={item.delay}
                             speed={30}
                             color={item.color}
+                            isLink={item.isLink}
+                            onClick={item.onClick}
                         />
                     ))}
                 </div>
             </div>
+
+            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+                <div style={{
+                    width: '100%',
+                    height: '100%',
+                    padding: '40px 20px 20px 20px',
+                    boxSizing: 'border-box',
+                    overflow: 'auto',
+                    background: '#fff'
+                }}>
+                    {/* Empty modal ready for new content */}
+                </div>
+            </Modal>
         </Layout>
     );
 }

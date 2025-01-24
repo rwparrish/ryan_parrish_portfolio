@@ -3,10 +3,17 @@ import { TerminalText } from '../components/TerminalText';
 import { ProjectCard } from '../components/ProjectCard';
 
 export default function Projects() {
-  const content = [
+  const introContent = [
     {
       text: "Welcome to my project showcase. Each card represents a piece of my journey in software development. Feel free to explore the live demos or dive into the code.",
       delay: 0
+    }
+  ];
+
+  const outroContent = [
+    {
+      text: 'I hope you are enjoying your time here and like what you see. Be sure to return to "Project" moon in the future as new projects are consistently coming together here.',
+      delay: 8000
     }
   ];
 
@@ -37,7 +44,7 @@ export default function Projects() {
 
   return (
     <Layout title="Projects">
-      {/* Text Box Container */}
+      {/* Intro Text Box */}
       <div style={{
         maxWidth: '900px',
         width: '100%',
@@ -49,7 +56,7 @@ export default function Projects() {
         margin: '0 20px 20px 20px'
       }}>
         <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-          {content.map((item, index) => (
+          {introContent.map((item, index) => (
             <TerminalText
               key={index}
               text={item.text}
@@ -64,7 +71,10 @@ export default function Projects() {
       <div style={{
         maxWidth: '900px',
         width: '100%',
-        margin: '0 20px'
+        margin: '0 20px 60px 20px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'stretch'
       }}>
         <div style={{
           display: 'grid',
@@ -74,6 +84,29 @@ export default function Projects() {
         }}>
           {projects.map((project, index) => (
             <ProjectCard key={index} {...project} />
+          ))}
+        </div>
+      </div>
+
+      {/* Outro Text Box */}
+      <div style={{
+        maxWidth: '900px',
+        width: '100%',
+        padding: '20px',
+        background: 'rgba(0, 0, 0, 0.7)',
+        borderRadius: '8px',
+        border: '1px solid #00ff88',
+        boxShadow: '0 0 20px rgba(0, 255, 136, 0.2)',
+        margin: '0 20px 20px 20px'
+      }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+          {outroContent.map((item, index) => (
+            <TerminalText
+              key={index}
+              text={item.text}
+              delay={item.delay}
+              speed={30}
+            />
           ))}
         </div>
       </div>
