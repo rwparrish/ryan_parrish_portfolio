@@ -4,7 +4,7 @@ import { TerminalText } from '../components/TerminalText';
 export default function About() {
     const content = [
         {
-            text: "Welcome aboard, I'm Captain Ryan Parrish. Welcome to my corner of the digital universe. I'm a software engineer with a passion for creating innovative solutions and building stylish products that make a difference. I love to learn and build things. If it wasn't already obvious, I'm a big fan of space and sci-fi.\n\n",
+            text: "Welcome aboard, I'm Captain Ryan Parrish. Welcome to my corner of the digital universe. I'm a software engineer with a passion for creating innovative solutions and building stylish products. I love to learn and build things. If it wasn't already obvious, I'm a big fan of space and sci-fi.\n\n",
             delay: 0,
         },
         {

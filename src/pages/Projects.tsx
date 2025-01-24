@@ -12,12 +12,26 @@ export default function Projects() {
 
   const projects = [
     {
-      title: "Project Name",
-      description: "Project description goes here. This should be a brief overview of what the project does and what technologies were used.",
-      liveLink: "https://project-demo.com",
-      githubLink: "https://github.com/rwparrish/project-repo",
-      technologies: ["React", "TypeScript", "Node.js"]
+      title: "Comp Widget",
+      description: "An interactive web application designed to help students learn about numerical comparisons through visual block manipulation and comparison.",
+      liveLink: "https://rwparrish.github.io/comp_widget/",
+      githubLink: "https://github.com/rwparrish/comp_widget",
+      technologies: ["React", "JavaScript", "HTML", "CSS"]
     },
+    {
+        title: "Project Name",
+        description: "Project description goes here. This should be a brief overview of what the project does and what technologies were used.",
+        liveLink: "https://project-demo.com",
+        githubLink: "https://github.com/rwparrish/project-repo",
+        technologies: ["React", "TypeScript", "Node.js"]
+      },
+      {
+        title: "Project Name",
+        description: "Project description goes here. This should be a brief overview of what the project does and what technologies were used.",
+        liveLink: "https://project-demo.com",
+        githubLink: "https://github.com/rwparrish/project-repo",
+        technologies: ["React", "TypeScript", "Node.js"]
+      },
     // Add more projects as needed
   ];
 
