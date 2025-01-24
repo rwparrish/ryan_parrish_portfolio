@@ -4,6 +4,7 @@ import { OrbitControls } from '@react-three/drei'
 import Planet from './Planet'
 import Universe from './Universe'
 import { planetContainer } from './Planet/styles'
+import { BridgeLayout } from './BridgeLayout'
 
 export default function App() {
   const cameraPosition = useMemo(() => {
@@ -19,14 +20,7 @@ export default function App() {
   }, []);
 
   return (
-    <div style={{
-      width: '100vw',
-      height: '100vh',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      background: '#000'
-    }}>
+    <BridgeLayout>
       <div style={planetContainer}>
         <Canvas camera={{ position: [cameraPosition.x, cameraPosition.y, cameraPosition.z], fov: 45 }}>
           <Universe />
@@ -40,6 +34,6 @@ export default function App() {
           />
         </Canvas>
       </div>
-    </div>
+    </BridgeLayout>
   )
 }
