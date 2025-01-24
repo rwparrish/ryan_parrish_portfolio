@@ -36,9 +36,25 @@ export const Layout = ({ children, title }: LayoutProps) => (
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: '0 20px'
+        padding: '0 20px',
+        position: 'relative'
       }}>
         <div style={{ fontSize: '14px' }}>SYSTEM://terminal_access</div>
+        <a href="/" style={{ 
+          color: '#00ff88', 
+          textDecoration: 'none',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '5px',
+          fontSize: '14px',
+          position: 'absolute',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          whiteSpace: 'nowrap'
+        }}>
+          <span style={{ fontSize: '20px' }}>←</span> 
+          <span>RETURN_TO_BRIDGE</span>
+        </a>
         <div style={{ 
           fontSize: '14px',
           display: 'flex',
@@ -84,25 +100,6 @@ export const Layout = ({ children, title }: LayoutProps) => (
       flexDirection: 'column',
       alignItems: 'center'
     }}>
-      {/* Return to Home Link */}
-      <div style={{
-        alignSelf: 'flex-start',
-        cursor: 'pointer',
-        fontFamily: '"Share Tech Mono", monospace',
-        marginBottom: '20px'
-      }}>
-        <a href="/" style={{ 
-          color: '#00ff88', 
-          textDecoration: 'none',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '5px'
-        }}>
-          <span style={{ fontSize: '20px' }}>←</span> 
-          <span>RETURN_TO_BRIDGE</span>
-        </a>
-      </div>
-
       {/* Title */}
       <h1 style={{ 
         fontFamily: '"Share Tech Mono", monospace',
