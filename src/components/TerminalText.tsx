@@ -5,7 +5,7 @@ interface TerminalTextProps {
   speed?: number;
   delay?: number;
   className?: string;
-  color?: string;
+  color?: `#${string}`;
 }
 
 export function TerminalText({ text, speed = 50, delay = 0, className = '', color }: TerminalTextProps) {

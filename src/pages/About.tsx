@@ -4,7 +4,7 @@ import { TerminalText } from '../components/TerminalText';
 export default function About() {
     const content = [
         {
-            text: "Hi, I'm Ryan. Welcome to my corner of the digital universe. I'm a software engineer with a passion for creating innovative solutions and building products that make a difference. I love to learn and build things. If it wasn't already obvious, I'm a big fan of space and sci-fi.\n\n",
+            text: "Hi, I'm Ryan. Welcome to my corner of the digital universe. I'm a software engineer with a passion for creating innovative solutions and building stylish products that make a difference. I love to learn and build things. If it wasn't already obvious, I'm a big fan of space and sci-fi.\n\n",
             delay: 0,
         },
         {
@@ -57,7 +57,7 @@ export default function About() {
             delay: 22000,
         },
         {
-            text: "Thanks for stopping by! I hope you find something interesting here. If you have any questions or just want to chat, feel free to reach out. I'm always open to new connections and opportunities. Return to orbit and click on the contact moon for details.\n\n",
+            text: "Thanks for stopping by! I hope you find something interesting here. If you have any questions or just want to chat, feel free to reach out. I'm always open to new connections and opportunities. Return to the bridge and click on the contact moon for details.\n\n",
             delay: 24000,
         },
         {
@@ -74,6 +74,8 @@ export default function About() {
                 alignItems: 'center',
                 gap: '20px',
                 width: '100%',
+                padding: '0 20px',
+                boxSizing: 'border-box',
                 position: 'relative'
             }}>
                 <div style={{
@@ -81,9 +83,7 @@ export default function About() {
                     borderRadius: '50%',
                     padding: '5px',
                     boxShadow: '0 0 20px rgba(0, 255, 136, 0.3)',
-                    position: 'sticky',
-                    top: '20px',
-                    zIndex: 1
+                    marginBottom: '20px'
                 }}>
                     <img
                         src="src/assets/headshot.jpg"
@@ -105,10 +105,7 @@ export default function About() {
                     borderRadius: '8px',
                     border: '1px solid #00ff88',
                     boxShadow: '0 0 20px rgba(0, 255, 136, 0.2)',
-                    margin: '20px',
-                    overflowY: 'scroll',
-                    maxHeight: '70vh',
-                    scrollbarGutter: 'stable'
+                    margin: '0 20px 20px 20px'  // Changed margin
                 }}>
                     {content.map((item, index) => (
                         <TerminalText

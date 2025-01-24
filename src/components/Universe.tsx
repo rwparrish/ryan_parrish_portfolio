@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useMemo } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
 
@@ -94,6 +94,10 @@ const starfieldShader = {
 export default function Universe() {
   const materialRef = useRef<THREE.ShaderMaterial>(null);
 
+  const uniforms = useMemo(() => ({
+    uTime: { value: 0 }
+  }), []);
+
   useFrame(({ clock }) => {
     if (materialRef.current) {
       materialRef.current.uniforms.uTime.value = clock.getElapsedTime() * 0.2;
@@ -107,9 +111,7 @@ export default function Universe() {
         <shaderMaterial
           ref={materialRef}
           side={THREE.BackSide}
-          uniforms={{
-            uTime: { value: 0 }
-          }}
+          uniforms={uniforms}
           vertexShader={starfieldShader.vertexShader}
           fragmentShader={starfieldShader.fragmentShader}
           transparent={true}
