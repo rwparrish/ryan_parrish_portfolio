@@ -1,3 +1,6 @@
+import './ProjectCard.css';
+
+
 interface ProjectCardProps {
   title: string;
   description: string;
@@ -18,11 +21,7 @@ export function ProjectCard({ title, description, liveLink, githubLink, technolo
       height: '100%',
       display: 'flex',
       flexDirection: 'column',
-      ':hover': {
-        transform: 'translateY(-2px)',
-        boxShadow: '0 4px 20px rgba(0, 255, 136, 0.3)'
-      }
-    }}>
+    }} className="project-card">
       <h3 style={{
         color: '#00ff88',
         margin: '0 0 10px 0',
