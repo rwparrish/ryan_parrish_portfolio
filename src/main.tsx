@@ -7,24 +7,31 @@ import Projects from './pages/Projects.tsx'
 import Contact from './pages/Contact.tsx'
 import { createHashRouter, RouterProvider } from 'react-router-dom'
 
-const router = createHashRouter([
+const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: <App />,
+    },
+    {
+      path: "/about",
+      element: <About />,
+    },
+    {
+      path: "/projects",
+      element: <Projects />,
+    },
+    {
+      path: "/contact",
+      element: <Contact />,
+    },
+  ],
   {
-    path: "/",
-    element: <App />,
-  },
-  {
-    path: "/about",
-    element: <About />,
-  },
-  {
-    path: "/projects",
-    element: <Projects />,
-  },
-  {
-    path: "/contact",
-    element: <Contact />,
-  },
-]);
+    future: {
+      v7_startTransition: true,
+    },
+  }
+);
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
