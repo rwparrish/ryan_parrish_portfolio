@@ -11,7 +11,7 @@ interface TerminalTextProps {
   onClick?: () => void;
 }
 
-export function TerminalText({ text, speed = 50, delay = 0, className = '', color = '#00ff88', isLink, href, onClick }: TerminalTextProps) {
+export function TerminalText({ text, speed = 50, delay = 0, className = '', color = '#00ff88', isLink, onClick }: TerminalTextProps) {
   const { displayedText } = useTypewriter(text, speed, delay);
 
   return isLink ? (

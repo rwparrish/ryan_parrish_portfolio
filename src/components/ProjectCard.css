@@ -5,9 +5,7 @@
   }
 }
 
-.project-card a {
-  &:hover {
-    background-color: rgba(0, 255, 136, 0.1) !important;
-    box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
-  }
+.project-link:hover {
+  background-color: rgba(0, 255, 136, 0.1) !important;
+  box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
 } 

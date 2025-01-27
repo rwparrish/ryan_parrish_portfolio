@@ -68,11 +68,9 @@ export function ProjectCard({ title, description, liveLink, githubLink, technolo
             border: '1px solid #00ff88',
             borderRadius: '4px',
             fontSize: '0.9em',
-            transition: 'background-color 0.2s',
-            ':hover': {
-              backgroundColor: 'rgba(0, 255, 136, 0.1)'
-            }
+            transition: 'background-color 0.2s'
           }}
+          className="project-link"
         >
           Live Demo
         </a>
@@ -87,10 +85,7 @@ export function ProjectCard({ title, description, liveLink, githubLink, technolo
             border: '1px solid #00ff88',
             borderRadius: '4px',
             fontSize: '0.9em',
-            transition: 'background-color 0.2s',
-            ':hover': {
-              backgroundColor: 'rgba(0, 255, 136, 0.1)'
-            }
+            transition: 'background-color 0.2s'
           }}
         >
           GitHub

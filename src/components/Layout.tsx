@@ -50,8 +50,14 @@ export const Layout = ({ children, title }: LayoutProps) => (
           position: 'absolute',
           left: '50%',
           transform: 'translateX(-50%)',
-          whiteSpace: 'nowrap'
-        }}>
+          whiteSpace: 'nowrap',
+          cursor: 'pointer'
+        }}
+          onClick={(e) => {
+            e.preventDefault();
+            window.location.href = '/ryan_parrish_portfolio/';
+          }}
+        >
           <span style={{ fontSize: '20px' }}>←</span> 
           <span>RETURN_TO_BRIDGE</span>
         </a>

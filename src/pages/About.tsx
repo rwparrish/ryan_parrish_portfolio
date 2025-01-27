@@ -107,7 +107,7 @@ export default function About() {
                     marginBottom: '20px'
                 }}>
                     <img
-                        src="src/assets/headshot.jpg"
+                        src="/ryan_parrish_portfolio/assets/headshot.jpg"
                         alt="Profile"
                         style={{
                             width: '250px',

@@ -1,11 +1,18 @@
 import { Layout } from '../components/Layout';
 import { TerminalText } from '../components/TerminalText';
 
+interface ContentItem {
+  text: string;
+  delay: number;
+  isLink?: boolean;
+  href?: string;
+}
+
 export default function Contact() {
-    const content = [
+    const content: ContentItem[] = [
         {
             text: "Let's start a conversation and learn something new. Connect with me on ",
-            delay: 0,
+            delay: 0
         },
         {
             text: "LinkedIn",
@@ -49,7 +56,7 @@ export default function Contact() {
                     marginBottom: '20px'
                 }}>
                     <img
-                        src="src/assets/headshot.jpg"
+                        src="/ryan_parrish_portfolio/assets/headshot.jpg"
                         alt="Profile"
                         style={{
                             width: '250px',
@@ -72,15 +79,32 @@ export default function Contact() {
                 }}>
                     <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                         {content.map((item, index) => (
-                            <TerminalText
-                                key={index}
-                                text={item.text}
-                                delay={item.delay}
-                                speed={30}
-                                color={item.color}
-                                isLink={item.isLink}
-                                href={item.href}
-                            />
+                            item.isLink ? (
+                                <a 
+                                    key={index}
+                                    href={item.href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    style={{ 
+                                        color: '#00ff88',
+                                        textDecoration: 'underline',
+                                        cursor: 'pointer'
+                                    }}
+                                >
+                                    <TerminalText
+                                        text={item.text}
+                                        delay={item.delay}
+                                        speed={30}
+                                    />
+                                </a>
+                            ) : (
+                                <TerminalText
+                                    key={index}
+                                    text={item.text}
+                                    delay={item.delay}
+                                    speed={30}
+                                />
+                            )
                         ))}
                     </div>
                 </div>

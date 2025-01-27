@@ -181,7 +181,12 @@ const Moon = ({ data, isSelected, onClick, time }: MoonProps) => {
   );
 };
 
-const Terminal = ({ label, description }) => (
+interface TerminalProps {
+  label: string;
+  description: string;
+}
+
+const Terminal = ({ label, description }: TerminalProps) => (
   <div style={{
     background: COLORS.terminalBg,
     border: `2px solid ${COLORS.terminal}`,
@@ -270,7 +275,7 @@ const atmosphereMaterial = {
 };
 
 export default function Planet() {
-  const meshRef = useRef<Mesh>();
+  const meshRef = useRef<Mesh>(null);
   const [selectedMoon, setSelectedMoon] = useState<number | null>(null);
   const [time, setTime] = useState(0);
   const navigate = useNavigate();
