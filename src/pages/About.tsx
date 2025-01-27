@@ -66,19 +66,24 @@ export default function About() {
             color: '#00ff88'
         },
         {
-            text: ">> Click here to view classified documents <<",
+            text: "ACCESS GRANTED TO: ryan_parrish_resume\n",
             delay: 24000,
+            color: '#00ff88'
+        },
+        {
+            text: ">> Click here to view classified documents <<",
+            delay: 25000,
             isLink: true,
             onClick: () => setIsModalOpen(true),
             color: '#ffd700'
         },
         {
-            text: "\n\nThanks for stopping by! I hope you find something interesting here. If you have any questions or just want to chat, feel free to reach out. I'm always open to new connections and opportunities. Return to the bridge and click on the 'First Contact' moon for details.\n\n",
-            delay: 27500,
+            text: "\n\nThanks for stopping by! I hope you find something interesting here. If you have any questions or just want to chat, feel free to reach out. I'm always open to new connections and opportunities. Return to the bridge and click on the 'First Contact' to connect with me.\n\n",
+            delay: 28000,
         },
         {
             text: "Live long, and prosper.\n",
-            delay: 36000,
+            delay: 37000,
         }
     ];
 

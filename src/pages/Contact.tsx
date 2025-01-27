@@ -9,13 +9,23 @@ export default function Contact() {
         },
         {
             text: "LinkedIn",
-            delay: 2400,
+            delay: 2300,
             isLink: true,
             href: "https://www.linkedin.com/in/rwparrish/"
         },
         {
+            text: "or send me an email at ",
+            delay: 2750
+        },
+        {
+            text: "ryanwparrish@gmail.com",
+            delay: 3350,
+            isLink: true,
+            href: "mailto:ryanwparrish@gmail.com"
+        },
+        {
             text: ".",
-            delay: 2410
+            delay: 3400
         }
     ];
 
