@@ -11,7 +11,7 @@ interface ProjectCardProps {
 
 export function ProjectCard({ title, description, liveLink, githubLink, technologies }: ProjectCardProps) {
   return (
-    <div style={{
+    <div className="project-card" style={{
       background: 'rgba(0, 0, 0, 0.5)',
       border: '1px solid #00ff88',
       borderRadius: '4px',
@@ -21,7 +21,7 @@ export function ProjectCard({ title, description, liveLink, githubLink, technolo
       height: '100%',
       display: 'flex',
       flexDirection: 'column',
-    }} className="project-card">
+    }}>
       <h3 style={{
         color: '#00ff88',
         margin: '0 0 10px 0',
@@ -61,6 +61,7 @@ export function ProjectCard({ title, description, liveLink, githubLink, technolo
           href={liveLink}
           target="_blank"
           rel="noopener noreferrer"
+          className="project-link"
           style={{
             color: '#00ff88',
             textDecoration: 'none',
@@ -70,7 +71,6 @@ export function ProjectCard({ title, description, liveLink, githubLink, technolo
             fontSize: '0.9em',
             transition: 'background-color 0.2s'
           }}
-          className="project-link"
         >
           Live Demo
         </a>
@@ -78,6 +78,7 @@ export function ProjectCard({ title, description, liveLink, githubLink, technolo
           href={githubLink}
           target="_blank"
           rel="noopener noreferrer"
+          className="project-link"
           style={{
             color: '#00ff88',
             textDecoration: 'none',
