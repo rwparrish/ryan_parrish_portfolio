@@ -26,18 +26,17 @@ export default function Projects() {
       technologies: ["React", "JavaScript", "HTML", "CSS"]
     },
     {
-        title: "Project Name",
-        description: "Project description goes here. This should be a brief overview of what the project does and what technologies were used.",
-        liveLink: "https://project-demo.com",
-        githubLink: "https://github.com/rwparrish/project-repo",
-        technologies: ["React", "TypeScript", "Node.js"]
-      },
-      {
-        title: "rarcli",
-        description: "A command-line interface application for managing and browsing video game reviews. This application allows users to browse games, manage reviews, and track their gaming experiences.",
-        githubLink: "https://github.com/rwparrish/rarcli",
-        technologies: ["Python"]
-      },
+      title: "Noodle Doodles",
+      description: "Noodle Doodles is a website I built for my daughter Zoë to showcase her artwork online, with the potential to sell her creations in the future. The platform features an About page to learn more about the artist, a Gallery section displaying her artwork, and a Contact section with a form to get in touch. Future enhancements include AI-generated artwork combinations and automated email notifications using smtplib.",
+      githubLink: "https://github.com/rwparrish/zoes-artwork",
+      technologies: ["React", "JavaScript", "Python, Flask, SQLAlchemy"]
+    },
+    {
+      title: "rarcli",
+      description: "A command-line interface application for managing and browsing video game reviews. This application allows users to browse games, manage reviews, and track their gaming experiences.",
+      githubLink: "https://github.com/rwparrish/rarcli",
+      technologies: ["Python"]
+    },
   ];
 
   return (
