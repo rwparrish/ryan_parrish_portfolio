@@ -4,7 +4,7 @@ import './ProjectCard.css';
 interface ProjectCardProps {
   title: string;
   description: string;
-  liveLink: string;
+  liveLink?: string;
   githubLink: string;
   technologies: string[];
 }
