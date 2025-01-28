@@ -57,23 +57,25 @@ export function ProjectCard({ title, description, liveLink, githubLink, technolo
         display: 'flex',
         gap: '10px'
       }}>
-        <a
-          href={liveLink}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="project-link"
-          style={{
-            color: '#00ff88',
-            textDecoration: 'none',
-            padding: '8px 12px',
-            border: '1px solid #00ff88',
-            borderRadius: '4px',
-            fontSize: '0.9em',
-            transition: 'background-color 0.2s'
-          }}
-        >
-          Live Demo
-        </a>
+        {liveLink && (
+          <a
+            href={liveLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="project-link"
+            style={{
+              color: '#00ff88',
+              textDecoration: 'none',
+              padding: '8px 12px',
+              border: '1px solid #00ff88',
+              borderRadius: '4px',
+              fontSize: '0.9em',
+              transition: 'background-color 0.2s'
+            }}
+          >
+            Live Demo
+          </a>
+        )}
         <a
           href={githubLink}
           target="_blank"

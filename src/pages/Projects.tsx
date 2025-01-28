@@ -33,13 +33,11 @@ export default function Projects() {
         technologies: ["React", "TypeScript", "Node.js"]
       },
       {
-        title: "Project Name",
-        description: "Project description goes here. This should be a brief overview of what the project does and what technologies were used.",
-        liveLink: "https://project-demo.com",
-        githubLink: "https://github.com/rwparrish/project-repo",
-        technologies: ["React", "TypeScript", "Node.js"]
+        title: "rarcli",
+        description: "A command-line interface application for managing and browsing video game reviews. This application allows users to browse games, manage reviews, and track their gaming experiences.",
+        githubLink: "https://github.com/rwparrish/rarcli",
+        technologies: ["Python"]
       },
-    // Add more projects as needed
   ];
 
   return (
