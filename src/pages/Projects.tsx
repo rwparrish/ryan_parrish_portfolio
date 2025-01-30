@@ -71,25 +71,33 @@ export default function Projects() {
         </div>
       </div>
 
-      {/* Project Cards Container */}
+      {/* Projects Grid */}
       <div style={{
-        maxWidth: '900px',
-        width: '100%',
-        margin: '0 20px 60px 20px',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'stretch'
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+        columnGap: '40px',
+        rowGap: '40px',
+        maxWidth: '1200px',
+        margin: '0 auto',
+        marginTop: '60px',
+        marginBottom: '40px'
       }}>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-          gap: '20px',
-          width: '100%'
-        }}>
-          {projects.map((project, index) => (
-            <ProjectCard key={index} {...project} />
-          ))}
-        </div>
+        {projects.map((project, index) => (
+          <ProjectCard
+            key={index}
+            {...project}
+          />
+        ))}
+      </div>
+
+      {/* Bottom Text Section */}
+      <div style={{
+        maxWidth: '1200px',
+        margin: '0 auto',
+        padding: '0 20px 40px 20px',
+        textAlign: 'center'
+      }}>
+        <p>More projects coming soon...</p>
       </div>
 
       {/* Outro Text Box */}
