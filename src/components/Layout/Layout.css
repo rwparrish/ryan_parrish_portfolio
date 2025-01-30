@@ -1,0 +1,52 @@
+/* Grid Background */
+.layout-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  box-sizing: border-box;
+  background: 
+    linear-gradient(90deg, rgba(0, 255, 136, 0.15) 1px, rgba(0, 0, 0, 0.95) 1px),
+    linear-gradient(rgba(0, 255, 136, 0.15) 1px, rgba(0, 0, 0, 0.95) 1px) !important;
+  background-size: 20px 20px !important;
+  z-index: 0;
+}
+
+/* Layout header styles */
+.layout-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: linear-gradient(90deg, #000 0%, rgba(0, 255, 136, 0.1) 50%, #000 100%);
+  border-bottom: 1px solid #00ff88;
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
+  font-family: "Share Tech Mono", monospace;
+  z-index: 10;
+}
+
+.layout-return-link {
+  color: #00ff88;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  cursor: pointer;
+  z-index: 11;
+  pointer-events: auto;
+  transition: color 0.3s ease;
+}
+
+.layout-return-link:hover {
+  color: #66ffa6;
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.5);
+} 
