@@ -26,6 +26,13 @@ export default function Projects() {
       technologies: ["React", "JavaScript", "HTML", "CSS"]
     },
     {
+      title: "Japan Honeymoon",
+      description: "An interactive visualization of our 2-week honeymoon adventure across Japan (Nov 27 - Dec 12, 2024). This project documents our circular journey through seven unique locations, starting and ending in Tokyo.",
+      liveLink: "https://japan-honeymoon.vercel.app/",
+      githubLink: "https://github.com/rwparrish/japan-honeymoon",
+      technologies: ["Next.js", "TypeScript", "Tailwind", "Mapbox", "Cloudinary", "Vercel"]
+    },
+    {
       title: "Noodle Doodles",
       description: "Noodle Doodles is a website I built for my daughter Zoë to showcase her artwork online, with the potential to sell her creations in the future. The platform features an About page to learn more about the artist, a Gallery section displaying her artwork, and a Contact section with a form to get in touch. Future enhancements include AI-generated artwork combinations and automated email notifications using smtplib.",
       githubLink: "https://github.com/rwparrish/zoes-artwork",
